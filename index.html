@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=414, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Propuesta Mejorada</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body, html {
+            width: 100%;
+            height: 100%;
+            font-family: 'Satoshi', sans-serif;
+            background: linear-gradient(135deg, #2D572C, #004d00);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        #contenedor {
+            width: 100%;
+            max-width: 414px;
+            height: 100%;
+            max-height: 896px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        #contador {
+            font-size: 6rem;
+            color: white;
+            font-weight: bold;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            opacity: 1;
+            animation: fadeIn 1s ease;
+        }
+        #carrusel, #pregunta, #felicitaciones {
+            display: none;
+            text-align: center;
+            width: 90%;
+        }
+        #carrusel img {
+            width: 100%;
+            height: auto;
+            max-height: 500px; /* Ajusta la altura máxima para que sea más vertical */
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        #pregunta {
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 20px;
+            animation: slideIn 0.5s ease forwards;
+        }
+        button {
+            font-size: 1.5rem;
+            padding: 12px 30px;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 25px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        #botonSi {
+            background-color: #0c242b;
+            color: #fff;
+        }
+        #botonSi:hover {
+            transform: scale(1.1);
+        }
+        #botonNo {
+            background-color: #ff4b5c;
+            color: white;
+            position: absolute;
+        }
+        #felicitaciones img {
+            width: 100%;
+            max-width: 350px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        #felicitaciones p {
+            font-size: 2rem;
+            color: #fff;
+            margin-top: 20px;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        @keyframes slideIn {
+            0% { transform: translateY(100px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="contenedor">
+        <!-- Contador -->
+        <div id="contador">10</div>
+
+        <!-- Carrusel de fotos -->
+        <div id="carrusel">
+            <img id="fotoCarrusel" src="" alt="Foto del carrusel">
+        </div>
+
+        <!-- Pregunta y botones -->
+        <div id="pregunta">
+            <p>¿Puedo ser tu novio?</p>
+            <button id="botonSi">Sí</button>
+            <button id="botonNo">No</button>
+        </div>
+
+        <!-- Felicitaciones -->
+        <div id="felicitaciones">
+            <p>¡Felicitaciones!</p>
+            <img src="https://i.pinimg.com/736x/12/82/1a/12821aef23d6a0615e08d056bf5018e1.jpg" alt="Felicitaciones">
+        </div>
+    </div>
+
+    <script>
+        // 1. Contador
+        let contador = 10;
+        const contadorElemento = document.getElementById('contador');
+        const carrusel = document.getElementById('carrusel');
+        const pregunta = document.getElementById('pregunta');
+        const felicitaciones = document.getElementById('felicitaciones');
+        const botonSi = document.getElementById('botonSi');
+        const botonNo = document.getElementById('botonNo');
+
+        // Rutas de las imágenes (Asegúrate de que estas sean las correctas)
+        const fotos = [
+            'img1 (1).jpeg', 'img1 (2).jpeg', 'img1 (3).jpeg', 'img/img1 (4).jpeg', 'img/img1 (5).jpeg',
+            'img/img1 (6).jpeg', 'img/img1 (7).jpeg', 'img/img1 (8).jpeg', 'img/img1 (9).jpeg', 'img/img1 (10).jpeg',
+            'img/img1 (11).jpeg', 'img/img1 (12).jpeg', 'img/img1 (13).jpeg', 'img/img1 (14).jpeg', 'img/img1 (15).jpeg',
+            'img/img1 (16).jpeg', 'img/img1 (17).jpeg'
+        ];
+
+        const cambiarFotoCarrusel = () => {
+            const fotoAleatoria = fotos[Math.floor(Math.random() * fotos.length)];
+            document.getElementById('fotoCarrusel').src = fotoAleatoria;
+        }
+
+        const iniciarCarrusel = () => {
+            let indiceFoto = 0;
+            carrusel.style.display = 'block';
+            const intervaloCarrusel = setInterval(() => {
+                if (indiceFoto >= fotos.length) {
+                    clearInterval(intervaloCarrusel);
+                    carrusel.style.display = 'none';
+                    pregunta.style.display = 'block';
+                } else {
+                    cambiarFotoCarrusel();
+                    indiceFoto++;
+                }
+            }, 1500);
+        }
+
+        const iniciarContador = () => {
+            const intervalo = setInterval(() => {
+                contador--;
+                contadorElemento.textContent = contador;
+                if (contador === 0) {
+                    clearInterval(intervalo);
+                    contadorElemento.style.display = 'none';
+                    iniciarCarrusel();
+                }
+            }, 1000);
+        }
+
+        // 2. Botón "No" se mueve automáticamente después de 5 segundos
+        const moverBotonNo = () => {
+            const mover = () => {
+                const x = Math.random() * (window.innerWidth - botonNo.offsetWidth);
+                const y = Math.random() * (window.innerHeight - botonNo.offsetHeight);
+                botonNo.style.left = x + 'px';
+                botonNo.style.top = y + 'px';
+            }
+            setInterval(mover, 1000);
+        }
+
+        setTimeout(() => {
+            moverBotonNo();
+        }, 5000); // Empieza a moverse después de 5 segundos
+
+        // 3. Botón "Sí"
+        botonSi.addEventListener('click', function() {
+            pregunta.style.display = 'none';
+            felicitaciones.style.display = 'block';
+        });
+
+        // Iniciar contador
+        iniciarContador();
+    </script>
+
+</body>
+</html>
